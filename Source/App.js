@@ -356,3 +356,23 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 });
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
+
+//Get scene of current viewer
+var scene = viewer.scene;
+//Get Layers collection from scene
+var layerCollections = scene.imageryLayers;
+//Add coordinates layer to Cesium viewer
+var CoordinatesProvider = new Cesium.TileCoordinatesImageryProvider();
+var CoordinatesLayer = layerCollections.add(new Cesium.ImageryLayer(CoordinatesProvider));
+
+//Add United States Weather Radar
+var USRadarProvider = new Cesium.WebMapServiceImageryProvider({
+    url : 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?',
+    layers : 'nexrad-n0r',
+    credit : 'Radar data courtesy Iowa Environmental Mesonet',
+    parameters : {
+        transparent : 'true',
+        format : 'image/png'
+    }
+})
+var USRadarLayer = layerCollections.add(new Cesium.ImageryLayer(USRadarProvider));
