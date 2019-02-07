@@ -1,80 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cesiumjs.org/releases/1.53/Build/Cesium/Cesium.js"></script>
-    <!--<script src="Source/Sandcastle-header.js"></script>-->
-    <link href="https://cesiumjs.org/releases/1.53/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-    <!--<link href="Source/bucket.css" rel="stylesheet">-->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>3D Weather Simulation System</title>
-    <style type="text/css">
-        #viewport {
-            bottom: 0;
-            left: 0;
-            overflow: hidden;
-            perspective: 400;
-            position: absolute;
-            right: 0;
-            top: 0;
-        }
-
-        #world {
-            height: 512px;
-            left: 50%;
-            margin-left: -256px;
-            margin-top: -256px;
-            position: absolute;
-            top: 50%;
-            transform-style: preserve-3d;
-            width: 512px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-<div id="viewport" >
-    <div id="world" ></div>
-</div>
-<script>
 
-    /*
-  Defining our variables
-  world and viewport are DOM elements,
-  worldXAngle and worldYAngle are floats that hold the world rotations,
-  d is an int that defines the distance of the world from the camera
-*/
-    var world = document.getElementById( 'world' ),
-        viewport = document.getElementById( 'viewport' ),
-        worldXAngle = 0,
-        worldYAngle = 0,
-        d = 0;
-
-    /*
-      Event listener to transform mouse position into angles
-      from -180 to 180 degress, both vertically and horizontally
-    */
-    window.addEventListener( 'mousemove', function( e ) {
-
-        worldYAngle = -( .5 - ( e.clientX / window.innerWidth ) ) * 180;
-        worldXAngle = ( .5 - ( e.clientY / window.innerHeight ) ) * 180;
-        updateView();
-
-    } );
-
-    /*
-      Changes the transform property of world to be
-      translated in the Z axis by d pixels,
-      rotated in the X axis by worldXAngle degrees and
-      rotated in the Y axis by worldYAngle degrees.
-    */
-    function updateView() {
-
-        world.style.transform = 'translateZ( ' + d + 'px ) \
-  rotateX( ' + worldXAngle + 'deg) \
-  rotateY( ' + worldYAngle + 'deg)';
-
-    }
-</script>
 </body>
 </html>

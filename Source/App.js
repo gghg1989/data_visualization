@@ -265,7 +265,6 @@ WebGLGlobeDataSource.prototype.load = function(data) {
     //Here's a more visual example.
     //[["series1",[latitude, longitude, height, ... ]
     // ["series2",[latitude, longitude, height, ... ]]
-    console.info(data[0][1]);
     // Loop over each series
     for (var x = 0; x < data.length; x++) {
         var series = data[x];
