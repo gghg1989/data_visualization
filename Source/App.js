@@ -350,11 +350,20 @@ dataSource.loadUrl('../Source/SampleData/population909500.json').then(function()
 
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
-    animation : false,
-    timeline : false
+    animation : true,
+    timeline : true
 });
-viewer.clock.shouldAnimate = false;
+viewer.clock.shouldAnimate = true;
 viewer.dataSources.add(dataSource);
+
+
+//Get scene of current viewer
+var scene = viewer.scene;
+//Get Layers collection from scene
+var layerCollections = scene.imageryLayers;
+//Add coordinates layer to Cesium viewer
+var CoordinatesProvider = new Cesium.TileCoordinatesImageryProvider();
+var CoordinatesLayer = layerCollections.add(new Cesium.ImageryLayer(CoordinatesProvider));
 
 //Add United States Weather Radar
 var USRadarProvider = new Cesium.WebMapServiceImageryProvider({
