@@ -355,3 +355,15 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 });
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
+
+//Add United States Weather Radar
+var USRadarProvider = new Cesium.WebMapServiceImageryProvider({
+    url : 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?',
+    layers : 'nexrad-n0r',
+    credit : 'Radar data courtesy Iowa Environmental Mesonet',
+    parameters : {
+        transparent : 'true',
+        format : 'image/png'
+    }
+})
+var USRadarLayer = layerCollections.add(new Cesium.ImageryLayer(USRadarProvider));
