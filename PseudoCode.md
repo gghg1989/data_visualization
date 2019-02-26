@@ -268,6 +268,7 @@ function post(req, res)
 - Output: formed data(JSON String)
 - Data Structure: JSON, Array
 
+```Javascript
 function(req) 
     //an array of files selected
     files = [];
@@ -283,3 +284,4 @@ function(req)
               //add each file to the form data and iteratively name them
               formData.append("file" + i, data.files[i]);
           return formData;
+```
