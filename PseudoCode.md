@@ -1,4 +1,5 @@
-## Quad-tree Pseudo Code
+## Quad-tree Algorithm
+Students: Yuzhou Feng
 ### Data Structure
 It is assumed these structures are used.
 ```java
@@ -49,6 +50,8 @@ class QuadTree
 ```
 ### Insertion
 The following method inserts a point into the appropriate quad of a quadtree, splitting if necessary.
+- Input: point(XY)
+- Output: insersion success or not(Boolean)
 ```java
 class QuadTree
 
@@ -85,6 +88,8 @@ class QuadTree
 ```
 ### Query range
 The following method finds all points contained within a range.
+- Input: range(AABB)
+- Output: points in range(Array)
 ```java
 class QuadTree
 
@@ -120,3 +125,102 @@ class QuadTree
     return pointsInRange;
  
 ```
+
+## Database CRUD Algorithm
+Students: Yuzhou Feng
+
+### Create entry to database
+- Input: data subject(Map)
+- Output: insersion success or not(Boolean)
+
+```java
+function add(Subject subject)
+    boolean flag = false;
+    String sql="insert";
+    PreparedStatement pstmt = conn.prepareStatement(sql);
+    int i = executeUpdateNumber;
+    if(i>0)
+      flag = true;
+    return flag;
+``` 
+ 
+### Override
+  public List<Subject> selectall() {
+    List<Subject> list = new ArrayList<Subject>();
+    String sql = "select * from tb_subject";
+    PreparedStatement pstmt = conn.prepareStatement(sql);
+    ResultSet rs = pstmt.executeQuery();
+    loop (rs.next())
+      list.add(subject);
+    return list;
+  }
+  
+  @Override
+  public List<Subject> selectByID(String subjectID) {
+    List<Subject> list = new ArrayList<Subject>();
+    try {
+      String sql = "select * from tb_subject where subjectID=?";
+      PreparedStatement pstmt = conn.prepareStatement(sql);
+      pstmt.setString(1,subjectID );
+      ResultSet rs = pstmt.executeQuery();
+      while(rs.next()) {
+        Subject subject = new Subject();
+        subject.setSubjectID(rs.getInt("subjectID"));
+        subject.setSubjectTitle(rs.getString("subjectTitle"));
+        subject.setSubjectOptionA(rs.getString("subjectOptionA"));
+        subject.setSubjectOptionB(rs.getString("subjectOptionB"));
+        subject.setSubjectOptionC(rs.getString("subjectOptionC"));
+        subject.setSubjectOptionD(rs.getString("subjectOptionD"));
+        subject.setSubjectAnswer(rs.getString("subjectAnswer"));
+        subject.setSubjectParse(rs.getString("subjectParse"));
+        list.add(subject);
+      }
+      rs.close();
+      pstmt.close();
+      conn.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    
+    return list;
+  }
+ 
+  @Override
+  public boolean update( String subjectTitle,
+      String subjectOptionA, String subjectOptionB,
+      String subjectOptionC, String subjectOptionD, String subjectAnswer,
+      String subjectParse) {
+    boolean flag = false;
+    try {
+      String sql = "update tb_subject set subjectOptionA = '"+subjectOptionA+"',subjectOptionB = '"+subjectOptionB+"',subjectOptionC = '"+subjectOptionC+
+          "',subjectOptionD = '"+subjectOptionD+"',subjectAnswer = '"+subjectAnswer+"',subjectParse = '"+subjectParse+"' where subjectTitle = '"+subjectTitle+"'";
+      
+      PreparedStatement pstmt = conn.prepareStatement(sql);
+      int i = pstmt.executeUpdate();
+      pstmt.close();
+      conn.close();
+      if(i>0)flag = true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return flag;
+  }
+ 
+  @Override
+  public boolean delete(int subjectID) {
+    boolean flag = false;
+    
+    try {
+      String sql = "delete from tb_subject where subjectID = '"+subjectID+"'";
+      PreparedStatement pstmt = conn.prepareStatement(sql);
+      int i = pstmt.executeUpdate();
+      pstmt.close();
+      conn.close();
+      if(i>0) flag = true;
+    } catch (SQLException e) {
+      System.out.println("删除失败！");
+      e.printStackTrace();
+    }
+    
+    return flag;
+  }
