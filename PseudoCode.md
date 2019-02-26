@@ -127,7 +127,7 @@ class QuadTree
 ```
 
 ## Database CRUD Algorithm
-Students: Yuzhou Feng
+Students: Jingwei Li
 
 ### Create entry to database
 - Input: data subject(Map)
@@ -144,8 +144,13 @@ function add(Subject subject)
     return flag;
 ``` 
  
-### Override
-  public List<Subject> selectall() {
+### Query All data
+- Input: N/A
+- Output: List
+- data structure: List
+
+```java
+  function selectall() 
     List<Subject> list = new ArrayList<Subject>();
     String sql = "select * from tb_subject";
     PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -153,17 +158,23 @@ function add(Subject subject)
     loop (rs.next())
       list.add(subject);
     return list;
-  }
+ 
+``` 
   
-  @Override
-  public List<Subject> selectByID(String subjectID) {
+### Query data by ID
+- Input: String subjectID
+- Output: List
+- data structure: List
+
+
+```java
+  function selectByID(String subjectID) 
     List<Subject> list = new ArrayList<Subject>();
-    try {
       String sql = "select * from tb_subject where subjectID=?";
       PreparedStatement pstmt = conn.prepareStatement(sql);
       pstmt.setString(1,subjectID );
       ResultSet rs = pstmt.executeQuery();
-      while(rs.next()) {
+      while(rs.next()) 
         Subject subject = new Subject();
         subject.setSubjectID(rs.getInt("subjectID"));
         subject.setSubjectTitle(rs.getString("subjectTitle"));
@@ -174,53 +185,53 @@ function add(Subject subject)
         subject.setSubjectAnswer(rs.getString("subjectAnswer"));
         subject.setSubjectParse(rs.getString("subjectParse"));
         list.add(subject);
-      }
       rs.close();
       pstmt.close();
       conn.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    
     return list;
-  }
- 
-  @Override
-  public boolean update( String subjectTitle,
+```
+### Update data
+- Input:  String subjectTitle,
       String subjectOptionA, String subjectOptionB,
       String subjectOptionC, String subjectOptionD, String subjectAnswer,
-      String subjectParse) {
-    boolean flag = false;
-    try {
+      String subjectParse
+- Output: True/False
+- data structure: N/A
+
+
+```java
+  function update( String subjectTitle,
+      String subjectOptionA, String subjectOptionB,
+      String subjectOptionC, String subjectOptionD, String subjectAnswer,
+      String subjectParse) 
+      boolean flag = false;
+    
       String sql = "update tb_subject set subjectOptionA = '"+subjectOptionA+"',subjectOptionB = '"+subjectOptionB+"',subjectOptionC = '"+subjectOptionC+
           "',subjectOptionD = '"+subjectOptionD+"',subjectAnswer = '"+subjectAnswer+"',subjectParse = '"+subjectParse+"' where subjectTitle = '"+subjectTitle+"'";
-      
       PreparedStatement pstmt = conn.prepareStatement(sql);
       int i = pstmt.executeUpdate();
       pstmt.close();
       conn.close();
       if(i>0)flag = true;
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
     return flag;
-  }
+``` 
  
-  @Override
-  public boolean delete(int subjectID) {
-    boolean flag = false;
-    
-    try {
+### Delete the data by ID
+- Input: subjectID
+- Output: True/False
+- data structure: N/A
+
+```java
+  function delete(int subjectID) 
+      boolean flag = false;
       String sql = "delete from tb_subject where subjectID = '"+subjectID+"'";
       PreparedStatement pstmt = conn.prepareStatement(sql);
       int i = pstmt.executeUpdate();
       pstmt.close();
       conn.close();
-      if(i>0) flag = true;
-    } catch (SQLException e) {
-      System.out.println("删除失败！");
-      e.printStackTrace();
-    }
-    
+      if(i>0) 
+        flag = true;
+      else
+        System.out.println("删除失败！");
     return flag;
-  }
+```
