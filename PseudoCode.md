@@ -5,7 +5,6 @@ It is assumed these structures are used.
 ```java
 // Simple coordinate object to represent points and vectors
 struct XY
-
   float x
   float y
 
@@ -59,18 +58,15 @@ class QuadTree
 
   // Insert a point into the QuadTree
   function insert(XY p)
-  
     // Ignore objects that do not belong in this quad tree
     if (!boundary.containsPoint(p))
       return false // object cannot be added
 
     // If there is space in this quad tree and if doesn't have subdivisions, add the object here
     if (points.size < QT_NODE_CAPACITY && northWest == null)
-    
       points.append(p)
       return true
-   
-
+  
     // Otherwise, subdivide and then add the point to whichever node will accept it
     if (northWest == null)
       subdivide()
@@ -92,9 +88,6 @@ The following method finds all points contained within a range.
 - Output: points in range(Array)
 ```java
 class QuadTree
-
-  ...
-
   // Find all points that appear within a range
   function queryRange(AABB range)
   
@@ -107,10 +100,8 @@ class QuadTree
 
     // Check objects at this quad level
     for (int p = 0 p < points.size p++)
-    
       if (range.containsPoint(points[p]))
         pointsInRange.append(points[p])
-   
 
     // Terminate here, if there are no children
     if (northWest == null)
@@ -271,3 +262,24 @@ function post(req, res)
    data = JSON.parse(res)
    return JSON.stringify(data)
 ```
+
+### File Upload
+- Input: files (Array)
+- Output: formed data(JSON String)
+- Data Structure: JSON, Array
+
+function(req) 
+    //an array of files selected
+    files = [];
+    //the save method
+    save (file)
+      //This method will allow us to change how the data is sent up to the server
+      transformRequest function () 
+          var formData
+          //convert
+          formData.append("model", angular.toJson(data.model));
+          //now add all of the assigned files
+          for i = 0 to data.files
+              //add each file to the form data and iteratively name them
+              formData.append("file" + i, data.files[i]);
+          return formData;
