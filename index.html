@@ -65,8 +65,45 @@
             </tr>
         </tbody>
     </table>
+    <div id="uploadDiv">
+      <form id="upload" enctype="multipart/form-data" method="post"> 
+       <input type="file" name="file" id="pic"/> 
+       <input type="button" value="submit" onclick="uploadPic();"/> 
+       <span class="showUrl"></span> 
+       <img src="" class="showPic" alt=""> 
+      </form>
+    </div>
 </div>
 <script src="Source/App.js"></script>
+
+
+<script>
+  function uploadPic() { 
+  var form = document.getElementById('upload'), 
+    formData = new FormData(form); 
+    $.ajax({ 
+     url:"https://sscpre.boe.com/v1/medical-console/medical/file/upload", 
+     type:"post", 
+     data:formData, 
+     processData:false, 
+     contentType:false, 
+     success:function(res){ 
+      if(res){ 
+       alert("upload successfuly！"); 
+      } 
+      console.log(res); 
+      $("#pic").val(""); 
+      $(".showUrl").html(res); 
+      $(".showPic").attr("src",res); 
+     }, 
+     error:function(err){ 
+      alert("the internet contected flaiure,please try again latter!",err); 
+     } 
+    
+    }) 
+  
+ }
+</script>
 
 </body>
 </html>
