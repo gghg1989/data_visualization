@@ -12,6 +12,7 @@
 
     <script src="https://cesiumjs.org/releases/1.53/Build/Cesium/Cesium.js"></script>
     <script src="Source/Sandcastle-header.js"></script>
+    <script src="Source/jQuery-3.3.1.min.js"></script>
     <link href="https://cesiumjs.org/releases/1.53/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <link href="Source/bucket.css" rel="stylesheet">
     <title>3D Weather Simulation System</title>
@@ -82,7 +83,7 @@
   var form = document.getElementById('upload'), 
     formData = new FormData(form); 
     $.ajax({ 
-     url:"https://sscpre.boe.com/v1/medical-console/medical/file/upload", 
+     url:"", 
      type:"post", 
      data:formData, 
      processData:false, 

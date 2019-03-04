@@ -330,19 +330,8 @@ WebGLGlobeDataSource.prototype._setLoading = function(isLoading) {
 };
 
 //Now that we've defined our own DataSource, we can use it to load
-//any JSON data formatted for WebGL Globe.
-// var dataSource = new WebGLGlobeDataSource();
-//
-// dataSource.loadUrl('../Source/SampleData/population909500.json').then(function() {
-//
-//     //After the initial load, create buttons to let the user switch among series.
-//     function createSeriesSetter(seriesName) {
-//         return function() {
-//             dataSource.seriesToDisplay = seriesName;
-//         };
-//     }
-//
-// });
+//any JSON data formatted for WebGL Globe.'../Source/SampleData/population2016.json'
+
 
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
@@ -352,44 +341,13 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 });
 viewer.clock.shouldAnimate = true;
 //viewer.dataSources.add(dataSource);
-//viewer.extend(Cesium.viewerCesiumInspectorMixin);
 
 
 //Get scene of current viewer
 var scene = viewer.scene;
 //Get Layers collection from scene
 var layerCollections = scene.imageryLayers;
-//Add coordinates layer to Cesium viewer
-//var CoordinatesProvider = new Cesium.TileCoordinatesImageryProvider();
-//var CoordinatesLayer = layerCollections.add(new Cesium.ImageryLayer(CoordinatesProvider));
 
-//Add United States Weather Radar
-// var USRadarProvider = new Cesium.WebMapServiceImageryProvider({
-//     url : 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?',
-//     layers : 'nexrad-n0r',
-//     credit : 'Radar data courtesy Iowa Environmental Mesonet',
-//     parameters : {
-//         transparent : 'true',
-//         format : 'image/png'
-//     }
-// })
-// var USRadarLayer = layerCollections.add(new Cesium.ImageryLayer(USRadarProvider));
-
-// Sandcastle.addToggleButton('Limit Enabled', true, function(checked) {
-//     if (checked) {
-//         viewer.scene.globe.cartographicLimitRectangle = coffeeBeltRectangle;
-//     } else {
-//         viewer.scene.globe.cartographicLimitRectangle = undefined;
-//     }
-// });
-//
-// Sandcastle.addToggleButton('Show Bounds', true, function(checked) {
-//     var rectanglesLength = rectangles.length;
-//     for (var i = 0; i < rectanglesLength; i++) {
-//         var rectangleEntity = rectangles[i];
-//         rectangleEntity.show = checked;
-//     }
-// });
 
 var imageryLayers = viewer.imageryLayers;
 
@@ -400,6 +358,7 @@ var viewModel = {
     downLayer : null,
     selectedLayer : null,
     isSelectableLayer : function(layer) {
+        changeDataType(layer.name);
         return this.baseLayers.indexOf(layer) >= 0;
     },
     raise : function(layer, index) {
@@ -435,23 +394,7 @@ function setupLayers() {
     addBaseLayerOption(
         'None',
         undefined); // the current base layer
-    addBaseLayerOption(
-        'wind',
-        function () {
-            var dataSource = new WebGLGlobeDataSource();
-            dataSource.loadUrl('../Source/SampleData/population909500.json').then(function() {
-
-                //After the initial load, create buttons to let the user switch among series.
-                function createSeriesSetter(seriesName) {
-                    return function() {
-                        dataSource.seriesToDisplay = seriesName;
-                    };
-                }
-
-            });
-            viewer.dataSources.add(dataSource);
-        },
-        );
+    
     addBaseLayerOption(
         'weather',
         new Cesium.BingMapsImageryProvider({
@@ -465,32 +408,21 @@ function setupLayers() {
         }));
     addBaseLayerOption(
         'pressure',
-        Cesium.createOpenStreetMapImageryProvider());
+        new Cesium.createOpenStreetMapImageryProvider());
     addBaseLayerOption(
         'hurricanes',
-        Cesium.createOpenStreetMapImageryProvider({
+        new Cesium.createOpenStreetMapImageryProvider({
             url : 'https://otile1-s.mqcdn.com/tiles/1.0.0/osm/'
         }));
     addBaseLayerOption(
         'humidity',
-        Cesium.createOpenStreetMapImageryProvider({
+        new Cesium.createOpenStreetMapImageryProvider({
             url : 'https://stamen-tiles.a.ssl.fastly.net/watercolor/',
             fileExtension: 'jpg',
             credit: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'
         }));
 
-    // Create the additional layers
-    // addAdditionalLayerOption(
-    //     'wind',
-    //     new Cesium.WebMapServiceImageryProvider({
-    //         url : 'https://mesonet.agron.iastate.edu/cgi-bin/wms/goes/conus_ir.cgi?',
-    //         layers : 'goes_conus_ir',
-    //         credit : 'Infrared data courtesy Iowa Environmental Mesonet',
-    //         parameters : {
-    //             transparent : 'true',
-    //             format : 'image/png'
-    //         }
-    //     }));
+    
     addAdditionalLayerOption(
         'United States Weather Radar',
         new Cesium.WebMapServiceImageryProvider({
@@ -501,29 +433,18 @@ function setupLayers() {
                 transparent : 'true',
                 format : 'image/png'
             }
-        }));
-    // addAdditionalLayerOption(
-    //     'temperature',
-    //     Cesium.createTileMapServiceImageryProvider({
-    //         url : '../images/cesium_maptiler/Cesium_Logo_Color'
-    //     }),
-    //     0.2);
-    // addAdditionalLayerOption(
-    //     'Pressure',
-    //     new Cesium.SingleTileImageryProvider({
-    //         url : '../images/Cesium_Logo_overlay.png',
-    //         rectangle : Cesium.Rectangle.fromDegrees(-115.0, 38.0, -107, 39.75)
-    //     }),
-    //     1.0);
+        }),1.0,false);
+
     addAdditionalLayerOption(
         'Grid',
         new Cesium.GridImageryProvider(), 1.0, false);
+
     addAdditionalLayerOption(
         'Tile Coordinates',
         new Cesium.TileCoordinatesImageryProvider(), 1.0, false);
 }
 
-function addBaseLayerOption(name, imageryProvider) {
+function addBaseLayerOption(name, imageryProvider,dataSource) {
     var layer;
     if (typeof imageryProvider === 'undefined') {
         layer = imageryLayers.get(0);
@@ -534,6 +455,7 @@ function addBaseLayerOption(name, imageryProvider) {
 
     layer.name = name;
     baseLayers.push(layer);
+
 }
 
 function addAdditionalLayerOption(name, imageryProvider, alpha, show) {
@@ -578,3 +500,43 @@ Cesium.knockout.getObservable(viewModel, 'selectedLayer').subscribe(function(bas
     baseLayer.alpha = alpha;
     updateLayerList();
 });
+
+var dataSource = new WebGLGlobeDataSource();
+function getResourceData(urlString){
+    dataSource.loadUrl(urlString).then(function() {
+        //After the initial load, create buttons to let the user switch among series.
+        function createSeriesSetter(seriesName) {
+            return function() {
+                dataSource.seriesToDisplay = seriesName;
+            };
+        }
+    });
+}
+function changeDataType(layerName){
+    
+    if(layerName == "weather"){
+        viewer.dataSources.remove(dataSource);
+        getResourceData('../Source/SampleData/population2016.json');
+        viewer.dataSources.add(dataSource);
+    }else if (layerName == "temperature") {
+        viewer.dataSources.remove(dataSource);
+        getResourceData('../Source/SampleData/population2017.json');
+        viewer.dataSources.add(dataSource);
+
+    }else if (layerName == "hurricanes") {
+        viewer.dataSources.remove(dataSource);
+        getResourceData('../Source/SampleData/population2018.json');
+        viewer.dataSources.add(dataSource);
+
+    }else if (layerName == "humidity") {
+        viewer.dataSources.remove(dataSource);
+        getResourceData('../Source/SampleData/population2017.json');
+        viewer.dataSources.add(dataSource);
+
+    }
+    
+}
+
+
+
+
