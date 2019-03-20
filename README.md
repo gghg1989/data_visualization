@@ -1,6 +1,6 @@
 # Data Visualization
 
-A simple JavaScript app showcasing some features of [Cesium](http://cesiumjs.org/), the open-source WebGL virtual globe and map engine. Learn more about this code by reading our [associated tutorial](https://cesiumjs.org/tutorials/Cesium-Workshop/).
+This Web-based 3D Earth Weather Simulation System will use National Weather Service(NWS), NASA, National Hurricane Center(NHC) data, such like radar cloud, hurricane and storm as the data source to demonstrate and visualize weather data in this system. 
 
 **Cesium version**: [1.45](https://cesiumjs.org/downloads/).
 
