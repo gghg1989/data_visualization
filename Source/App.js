@@ -397,30 +397,19 @@ function setupLayers() {
     
     addBaseLayerOption(
         'weather',
-        new Cesium.BingMapsImageryProvider({
-            url : 'https://dev.virtualearth.net',
-            mapStyle: Cesium.BingMapsStyle.ROAD
-        }));
+        undefined);
     addBaseLayerOption(
         'temperature',
-        new Cesium.ArcGisMapServerImageryProvider({
-            url : 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
-        }));
+        undefined);
     addBaseLayerOption(
         'pressure',
-        new Cesium.createOpenStreetMapImageryProvider());
+        undefined);
     addBaseLayerOption(
         'hurricanes',
-        new Cesium.createOpenStreetMapImageryProvider({
-            url : 'https://otile1-s.mqcdn.com/tiles/1.0.0/osm/'
-        }));
+        undefined);
     addBaseLayerOption(
         'humidity',
-        new Cesium.createOpenStreetMapImageryProvider({
-            url : 'https://stamen-tiles.a.ssl.fastly.net/watercolor/',
-            fileExtension: 'jpg',
-            credit: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'
-        }));
+        undefined);
 
     
     addAdditionalLayerOption(
@@ -502,6 +491,7 @@ Cesium.knockout.getObservable(viewModel, 'selectedLayer').subscribe(function(bas
 });
 
 var dataSource = new WebGLGlobeDataSource();
+
 function getResourceData(urlString){
     dataSource.loadUrl(urlString).then(function() {
         //After the initial load, create buttons to let the user switch among series.
