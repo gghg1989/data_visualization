@@ -338,8 +338,18 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
     //animation : true,
     shouldAnimate : true,
     timeline : true,
-    baseLayerPicker : false
+    baseLayerPicker : false,
+    terrainProvider : Cesium.createWorldTerrain()
 });
+
+//Add terrain to Cesium viewer
+// var terrainProvider = new Cesium.CesiumTerrainProvider({
+//     url : 'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles',
+//     requestVertexNormals: true
+// });
+// viewer.terrainProvider = terrainProvider;
+// viewer.scene.globe.enableLighting = true;
+
 //viewer.clock.shouldAnimate = true;
 //viewer.dataSources.add(dataSource);
 function dataCallback(interval, index) {
@@ -381,20 +391,20 @@ var viewModel = {
         changeDataType(layer.name);
         return this.baseLayers.indexOf(layer) >= 0;
     },
-    raise : function(layer, index) {
-        imageryLayers.raise(layer);
-        viewModel.upLayer = layer;
-        viewModel.downLayer = viewModel.layers[Math.max(0, index - 1)];
-        updateLayerList();
-        window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
-    },
-    lower : function(layer, index) {
-        imageryLayers.lower(layer);
-        viewModel.upLayer = viewModel.layers[Math.min(viewModel.layers.length - 1, index + 1)];
-        viewModel.downLayer = layer;
-        updateLayerList();
-        window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
-    },
+    // raise : function(layer, index) {
+    //     imageryLayers.raise(layer);
+    //     viewModel.upLayer = layer;
+    //     viewModel.downLayer = viewModel.layers[Math.max(0, index - 1)];
+    //     updateLayerList();
+    //     window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
+    // },
+    // lower : function(layer, index) {
+    //     imageryLayers.lower(layer);
+    //     viewModel.upLayer = viewModel.layers[Math.min(viewModel.layers.length - 1, index + 1)];
+    //     viewModel.downLayer = layer;
+    //     updateLayerList();
+    //     window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
+    // },
     canRaise : function(layerIndex) {
         return layerIndex > 0;
     },
