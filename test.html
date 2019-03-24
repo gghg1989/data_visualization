@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>层展开、关闭</title>
+<style type="text/css">
+#main{
+width:500px; margin:100px;
+height:500px;border:1px solid red
+}
+#test{
+border:1px solid red;
+display:none;width:10px;
+height:10px; background:yellow
+}
+</style>
+</head>
+<body>
+<input type="button" value="打开" id="bt" />
+<input type="button" value="关闭" id="bt1" />
+<div id="main"><div id="test"></div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+function $ (o) {
+return document.getElementById(o);
+}
+function XslideDown(obj,type,mX,num) {
+if(!type){return;}
+try{
+var type1=type=="height"?"marginTop":"marginLeft";
+var type2=type=="height"?"top":"left";
+XSetCss(obj,[type1,XgetOffset(obj)[type2]+"px"]);
+XSetCss(obj,[type,XgetOffset(obj)[type]+num+"px"]);
+if(XgetOffset(obj)[type]<mX){
+setTimeout(function(){XslideDown(obj,type,mX,num);},10); 
+}
+else{
+XSetCss(obj,[type,mX])
+}
+}
+catch(e){}
+}
+function XslideUp(obj,type,mX,num) {
+if(!type){return;}
+try{
+var type1=type=="height"?"marginTop":"marginLeft";
+var type2=type=="height"?"top":"left";
+XSetCss(obj,[type1,XgetOffset(obj)[type2]+"px"]);
+XSetCss(obj,[type,XgetOffset(obj)[type]-num+"px"]);
+if(XgetOffset(obj)[type]>mX){ 
+setTimeout(function(){XslideUp(obj,type,mX,num);},1); 
+}
+else{
+XSetCss(obj,[type,mX])
+obj.style.display="none";
+}
+}
+catch(e){}
+}
+function XSetCss(obj,cssArgs){
+if(arguments.length==2)
+{ 
+if(cssArgs.constructor==Object){
+for(var o in cssArgs)
+{
+if(obj.style[o]!="undefiend")
+{
+obj.style[o]=cssArgs[o]; 
+} 
+} 
+}
+if(cssArgs.constructor==Array&&cssArgs.length==2){
+obj.style[cssArgs[0]]=cssArgs[1]; 
+}
+}
+}
+function XgetOffset (obj) {
+return {
+height:obj.offsetHeight,
+width:obj.offsetWidth,
+top:parseInt((obj.parentNode.offsetHeight-obj.offsetHeight)/2),
+left:parseInt((obj.parentNode.offsetWidth-obj.offsetWidth)/2)
+}
+}
+function XopenDiv(o){
+o.style.display="block";
+XslideDown(o,"width",400,10);
+XslideDown(o,"height",400,10);
+}
+function XcloseDiv(o){
+XslideUp(o,"width",10,10);
+XslideUp(o,"height",10,10);
+}
+$("bt").onclick=function(){
+XopenDiv($("test"))
+}
+$("bt1").onclick=function(){
+XcloseDiv($("test"))
+}
+</script>

@@ -335,13 +335,33 @@ WebGLGlobeDataSource.prototype._setLoading = function(isLoading) {
 
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
-    animation : true,
+    //animation : true,
+    shouldAnimate : true,
     timeline : true,
     baseLayerPicker : false
 });
-viewer.clock.shouldAnimate = true;
+//viewer.clock.shouldAnimate = true;
 //viewer.dataSources.add(dataSource);
+function dataCallback(interval, index) {
+    var time;
+    if (index === 0) { // leading
+        time = Cesium.JulianDate.toIso8601(interval.stop);
+    } else {
+        time = Cesium.JulianDate.toIso8601(interval.start);
+    }
 
+    return {
+        Time: time
+    };
+}
+
+var times = Cesium.TimeIntervalCollection.fromIso8601({
+    iso8601: '2015-07-30/2017-06-16/P1D',
+    leadingInterval: true,
+    trailingInterval: true,
+    isStopIncluded: false, // We want stop time to be part of the trailing interval
+    dataCallback: dataCallback
+});
 
 //Get scene of current viewer
 var scene = viewer.scene;
@@ -397,21 +417,39 @@ function setupLayers() {
     
     addBaseLayerOption(
         'weather',
-        undefined);
+        new Cesium.createWorldImagery({
+            //style: Cesium.IonWorldImageryStyle.AERIAL_WITH_LABELS
+        }));
     addBaseLayerOption(
         'temperature',
-        undefined);
+        new Cesium.createWorldImagery({
+            //style: Cesium.IonWorldImageryStyle.AERIAL_WITH_LABELS
+        }));
     addBaseLayerOption(
         'pressure',
-        undefined);
+        new Cesium.createWorldImagery({
+            //style: Cesium.IonWorldImageryStyle.AERIAL_WITH_LABELS
+        }));
     addBaseLayerOption(
         'hurricanes',
-        undefined);
+         new Cesium.WebMapTileServiceImageryProvider({
+            url : 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/AMSR2_Snow_Water_Equivalent/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
+            layer : 'AMSR2_Snow_Water_Equivalent',
+            style : 'default',
+            tileMatrixSetID : '2km',
+            maximumLevel : 5,
+            format : 'image/png',
+            clock: viewer.clock,
+            times: times,
+            credit : 'NASA Global Imagery Browse Services for EOSDIS'
+        }));
+
     addBaseLayerOption(
         'humidity',
-        undefined);
+        new Cesium.createWorldImagery({
+            //style: Cesium.IonWorldImageryStyle.AERIAL_WITH_LABELS
+        }));
 
-    
     addAdditionalLayerOption(
         'United States Weather Radar',
         new Cesium.WebMapServiceImageryProvider({
@@ -438,10 +476,14 @@ function addBaseLayerOption(name, imageryProvider,dataSource) {
     if (typeof imageryProvider === 'undefined') {
         layer = imageryLayers.get(0);
         viewModel.selectedLayer = layer;
-    } else {
+    }else {
+        if(imageryProvider._layer==="AMSR2_Snow_Water_Equivalent"){
+            setAnimationData(imageryProvider);
+        }
         layer = new Cesium.ImageryLayer(imageryProvider);
+                
+        
     }
-
     layer.name = name;
     baseLayers.push(layer);
 
@@ -520,13 +562,31 @@ function changeDataType(layerName){
 
     }else if (layerName == "humidity") {
         viewer.dataSources.remove(dataSource);
-        getResourceData('../Source/SampleData/population2017.json');
+        getResourceData('../Source/SampleData/ .json');
         viewer.dataSources.add(dataSource);
 
     }
     
 }
 
+function setAnimationData(layerObject){
+    var imageryLayers = new Cesium.ImageryLayer(layerObject);
+    layerObject.readyPromise
+        .then(function() {
+            var start = Cesium.JulianDate.fromIso8601('2015-07-30');
+            var stop = Cesium.JulianDate.fromIso8601('2017-06-17');
+
+            viewer.timeline.zoomTo(start, stop);
+
+            var clock = viewer.clock;
+            clock.startTime = start;
+            clock.stopTime = stop;
+            clock.currentTime = start;
+            clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+            clock.multiplier = 86400;
+        });
+
+}
 
 
 
