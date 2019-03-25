@@ -1,3 +1,4 @@
+
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MDYxMTVjYy05ZmI4LTQwNWMtOTdkZi05YWZlMGIzOTFmNTUiLCJpZCI6NjgwOSwic2NvcGVzIjpbImFzbCIsImFzciIsImFzdyIsImdjIl0sImlhdCI6MTU0NzU4MzkwM30.YnntM1PtfzuUjUiIMjysJDZP2eqfXaMCsBmzxzKVWEQ';
 //var viewer = new Cesium.Viewer('cesiumContainer');
 /*  var viewer = new Cesium.Viewer('cesiumContainer', {
@@ -266,11 +267,28 @@ WebGLGlobeDataSource.prototype.load = function(data) {
     //[["series1",[latitude, longitude, height, ... ]
     // ["series2",[latitude, longitude, height, ... ]]
     // Loop over each series
+    var CityLatitudeLongitude = [[49.24966,-123.119339],[45.523449,-122.676208],[37.774929,-122.419418],
+    [47.606209,-122.332069],[34.052231,-118.243683],[32.715328,-117.157257],[36.174969,-115.137222],
+    [33.44838,-112.074043],[35.084492,-106.651138],[39.739151,-104.984703],[29.42412,-98.493629],[32.783058,-96.806671],
+    [29.763281,-95.363274],[39.099731,-94.578568],[44.979969,-93.26384],[38.62727,-90.197891],[41.850029,-87.650047],
+    [36.16589,-86.784439],[39.768379,-86.158043],[33.749001,-84.387978],[42.331429,-83.045753],[30.33218,-81.655647],
+    [35.227089,-80.843132],[25.774269,-80.193657],[40.44062,-79.995888],[43.700111,-79.416298],[39.952339,-75.163788],
+    [40.714272,-74.005966],[45.508839,-73.587807],[42.358429,-71.059769],[31.25181,34.791302],[32.083328,34.799999],
+    [29.55805,34.948212],[32.815559,34.98917],[33.005859,35.09409],[31.769039,35.216331]];
+
+    var combineData = new Array(); 
     for (var x = 0; x < data.length; x++) {
         var series = data[x];
         var seriesName = series[0];
         var coordinates = series[1];
-
+        for (var i = 0; i < coordinates.length; i++){
+            for(var j = 0; j < CityLatitudeLongitude.length; j++){
+                combineData[j] = [CityLatitudeLongitude[j][0],CityLatitudeLongitude[j][1],coordinates[i]];
+            }
+        }
+        console.log(combineData);
+        combineData = reduceDimension(combineData);
+        //console.log(combineData);
         //Add the name of the series to our list of possible values.
         this._seriesNames.push(seriesName);
 
@@ -282,10 +300,11 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
         //Now loop over each coordinate in the series and create
         // our entities from the data.
-        for (var i = 0; i < coordinates.length; i += 3) {
-            var latitude = coordinates[i];
-            var longitude = coordinates[i + 1];
-            var height = coordinates[i + 2];
+        for (var i = 0; i < combineData.length; i += 3) {
+
+            var latitude = combineData[i];
+            var longitude = combineData[i + 1];
+            var height = combineData[i + 2];
 
             //Ignore lines of zero height.
             if(height === 0) {
@@ -294,7 +313,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
             var color = Cesium.Color.fromHsl((0.6 - (height * 0.5)), 1.0, 0.5);
             var surfacePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
-            var heightPosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, height * heightScale);
+            var heightPosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0.01*height * heightScale);
 
             //WebGL Globe only contains lines, so that's the only graphics we create.
             var polyline = new Cesium.PolylineGraphics();
@@ -355,13 +374,13 @@ function dataCallback(interval, index) {
     };
 }
 
-var times = Cesium.TimeIntervalCollection.fromIso8601({
-    iso8601: '2015-07-30/2017-06-16/P1D',
-    leadingInterval: true,
-    trailingInterval: true,
-    isStopIncluded: false, // We want stop time to be part of the trailing interval
-    dataCallback: dataCallback
-});
+// var times = Cesium.TimeIntervalCollection.fromIso8601({
+//     iso8601: '2015-07-30/2017-06-16/P1D',
+//     leadingInterval: true,
+//     trailingInterval: true,
+//     isStopIncluded: false, // We want stop time to be part of the trailing interval
+//     dataCallback: dataCallback
+// });
 
 //Get scene of current viewer
 var scene = viewer.scene;
@@ -561,7 +580,7 @@ function changeDataType(layerName){
 
     }else if (layerName == "humidity") {
         viewer.dataSources.remove(dataSource);
-        getResourceData('../Source/SampleData/ .json');
+        getResourceData('../Source/SampleData/humidity.json');
         viewer.dataSources.add(dataSource);
 
     }
@@ -587,5 +606,13 @@ function setAnimationData(layerObject){
 
 }
 
-
+function reduceDimension(arr) {
+    var reduced = [];
+    for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].length; j++) {
+            reduced.push(arr[i][j]);
+        }
+    }
+    return reduced;
+}
 
