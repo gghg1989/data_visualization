@@ -339,16 +339,13 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
     shouldAnimate : true,
     timeline : true,
     baseLayerPicker : false,
-    terrainProvider : Cesium.createWorldTerrain()
+    //Add terrain to Cesium viewer
+    terrainProvider : Cesium.createWorldTerrain({
+        requestWaterMask : true, // required for water effects
+        requestVertexNormals : true // required for terrain lighting
+    }) 
 });
 
-//Add terrain to Cesium viewer
-// var terrainProvider = new Cesium.CesiumTerrainProvider({
-//     url : 'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles',
-//     requestVertexNormals: true
-// });
-// viewer.terrainProvider = terrainProvider;
-// viewer.scene.globe.enableLighting = true;
 
 //viewer.clock.shouldAnimate = true;
 //viewer.dataSources.add(dataSource);
@@ -384,12 +381,14 @@ var imageryLayers = viewer.imageryLayers;
 var viewModel = {
     layers : [],
     baseLayers : [],
+    dataSrcs : [],
     upLayer : null,
     downLayer : null,
     selectedLayer : null,
+    selectedDataSrc : null,
     isSelectableLayer : function(layer) {
         changeDataType(layer.name);
-        return this.baseLayers.indexOf(layer) >= 0;
+        //return this.baseLayers.indexOf(layer) >= 0;
     },
     // raise : function(layer, index) {
     //     imageryLayers.raise(layer);
@@ -405,12 +404,12 @@ var viewModel = {
     //     updateLayerList();
     //     window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
     // },
-    canRaise : function(layerIndex) {
-        return layerIndex > 0;
-    },
-    canLower : function(layerIndex) {
-        return layerIndex >= 0 && layerIndex < imageryLayers.length - 1;
-    }
+    // canRaise : function(layerIndex) {
+    //     return layerIndex > 0;
+    // },
+    // canLower : function(layerIndex) {
+    //     return layerIndex >= 0 && layerIndex < imageryLayers.length - 1;
+    // }
 };
 var baseLayers = viewModel.baseLayers;
 
@@ -499,6 +498,17 @@ function addBaseLayerOption(name, imageryProvider,dataSource) {
 
 }
 
+function setupDataSources() {
+    var xxx = ['None', 'weather', 'temperature', 'pressure', 'humidity'];
+    for (var ds in xxx) {
+        var dso = {};
+        var dss = viewModel.dataSrcs;
+        dso.name = xxx[ds];
+        dss.push(dso);
+    }
+    console.log(viewModel.dataSrcs);
+}
+
 function addAdditionalLayerOption(name, imageryProvider, alpha, show) {
     var layer = imageryLayers.addImageryProvider(imageryProvider);
     layer.alpha = Cesium.defaultValue(alpha, 0.5);
@@ -516,6 +526,7 @@ function updateLayerList() {
 }
 
 setupLayers();
+setupDataSources();
 updateLayerList();
 
 //Bind the viewModel to the DOM elements of the UI that call for it.
